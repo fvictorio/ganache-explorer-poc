@@ -5,7 +5,11 @@ import { BlockExplorer } from './BlockExplorer'
 import { useState } from './StateProvider'
 
 export const BlockExplorerContainer: React.FC = () => {
-  const state = useState()
+  const { state, dispatch } = useState()
 
-  return state.blocks ? <BlockExplorer blocks={state.blocks} /> : <CircularProgress />
+  const showMore = () => {
+    dispatch({ type: 'ShowMoreBlocks' })
+  }
+
+  return state.blocks ? <BlockExplorer blocks={state.blocks} onShowMore={showMore} /> : <CircularProgress />
 }

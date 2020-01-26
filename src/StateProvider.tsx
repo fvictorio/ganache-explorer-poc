@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { Dispatch } from 'react'
 import useInterval from '@use-it/interval'
 
 import { useWrappedWeb3 } from './WrappedWeb3Provider'
 
 type State = {
-  blocks: Maybe<Block[]>
+  blocks: Maybe<Blocks>
+  blocksRange: Maybe<[number, number]>
 }
 
-const StateContext = React.createContext<Maybe<State>>(null)
+const StateContext = React.createContext<Maybe<{ state: State; dispatch: Dispatch<ActionType> }>>(
+  null,
+)
 
 export const useState = () => {
   const context = React.useContext(StateContext)
@@ -19,45 +22,97 @@ export const useState = () => {
   return context
 }
 
+type ActionType =
+  | {
+      type: 'ShowMoreBlocks'
+    }
+  | { type: 'NewBlockNumber'; blockNumber: number }
+  | { type: 'AddBlocks'; newBlocks: Blocks }
+
+function reducer(state: State, action: ActionType): State {
+  if (action.type === 'ShowMoreBlocks') {
+    if (!state.blocksRange) return state
+    return {
+      ...state,
+      blocksRange: [Math.max(state.blocksRange[0] - 10, 1), state.blocksRange[1]],
+    }
+  }
+  if (action.type === 'NewBlockNumber') {
+    if (!state.blocksRange) {
+      return {
+        ...state,
+        blocksRange: [Math.max(action.blockNumber - 9, 1), action.blockNumber]
+      }
+    }
+    if (state.blocksRange[1] !== action.blockNumber) {
+      return {
+        ...state,
+        blocksRange: [state.blocksRange[0], action.blockNumber],
+      }
+    }
+  }
+  if (action.type === 'AddBlocks') {
+    if (!state.blocks) {
+      return {
+        ...state,
+        blocks: action.newBlocks
+      }
+    }
+    if (Object.keys(action.newBlocks).length) {
+      return {
+        ...state,
+        blocks: {
+          ...state.blocks,
+          ...action.newBlocks,
+        }
+      }
+    }
+  }
+
+  return state
+}
+
+const range = ([start, end]: [number, number]): number[] => {
+  if (start > end) return []
+
+  return [...Array(end - start + 1)].map((x, i) => start + i)
+}
+
 export const StateProvider: React.FC = ({ children }) => {
   const { library } = useWrappedWeb3()
-  const [blocks, setBlocks] = React.useState<Maybe<Block[]>>(null)
-  const [blockNumber, setBlockNumber] = React.useState<number | null>(null)
+
+  const initialState: State = { blocks: null, blocksRange: null }
+
+  const [state, dispatch] = React.useReducer(reducer, initialState)
 
   useInterval(() => {
     const run = async () => {
       const blockNumber = await library.getBlockNumber()
 
-      setBlockNumber(blockNumber)
+      dispatch({ type: 'NewBlockNumber', blockNumber })
     }
     run()
   }, 1000)
 
-  const lastBlockNumber = blocks && blocks.length ? blocks[blocks.length - 1].number : 1
-
   React.useEffect(() => {
     const run = async () => {
-      if (blockNumber === null) return
-      if (blockNumber === 0) {
-        setBlocks([])
-        return
-      }
+      if (!state.blocksRange) return
 
-      let newBlocks: Block[] = []
-      for (let i = blockNumber; i >= lastBlockNumber; i--) {
-        try {
-          const block = await library.getBlock(i)
-          newBlocks.push(block)
-        } catch (e) {
-          console.error(`Failed to fetch block ${i}`)
+      const newBlocks: Blocks = {}
+      for (const blockNumber of range(state.blocksRange)) {
+        if (!state.blocks || !state.blocks[blockNumber]) {
+          try {
+            newBlocks[blockNumber] = await library.getBlock(blockNumber)
+          } catch (e) {
+            console.error(`Failed to fetch block ${blockNumber}`)
+          }
         }
       }
-      setBlocks(newBlocks)
+
+      dispatch({ type: 'AddBlocks', newBlocks })
     }
     run()
-  }, [blockNumber, lastBlockNumber, library])
+  }, [state, library])
 
-  const state = { blocks }
-
-  return <StateContext.Provider value={state}>{children}</StateContext.Provider>
+  return <StateContext.Provider value={{ state, dispatch }}>{children}</StateContext.Provider>
 }

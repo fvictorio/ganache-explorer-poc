@@ -10,10 +10,11 @@ import { useConf } from './ConfProvider'
 export type Block = ethers.providers.Block
 
 type Props = {
-  blocks: Block[]
+  blocks: Blocks
+  onShowMore: () => void
 }
 
-export const BlockExplorer: React.FC<Props> = ({ blocks }) => {
+export const BlockExplorer: React.FC<Props> = ({ blocks, onShowMore }) => {
   const { conf } = useConf()
 
   const mine = async () => {
@@ -31,6 +32,10 @@ export const BlockExplorer: React.FC<Props> = ({ blocks }) => {
     }
   }
 
+  const sortedBlocks = Object.entries(blocks)
+    .sort((a, b) => +b[0] - +a[0])
+    .map(x => x[1])
+
   return (
     <div className="BlockExplorer">
       <Box marginY={2}>
@@ -38,9 +43,9 @@ export const BlockExplorer: React.FC<Props> = ({ blocks }) => {
           Mine new block
         </Button>
       </Box>
-      {blocks.length ? (
+      {sortedBlocks.length ? (
         <TransitionGroup>
-          {blocks.map(block => (
+          {sortedBlocks.map(block => (
             <CSSTransition key={block.hash} timeout={500} classNames="block">
               <Block block={block} />
             </CSSTransition>
@@ -49,6 +54,9 @@ export const BlockExplorer: React.FC<Props> = ({ blocks }) => {
       ) : (
         <p>No blocks</p>
       )}
+      <Button variant="contained" onClick={onShowMore}>
+        Show more
+      </Button>
     </div>
   )
 }

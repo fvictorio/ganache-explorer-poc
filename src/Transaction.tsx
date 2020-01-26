@@ -12,8 +12,8 @@ type Props = {
 
 const parseLog = (abis: any[], log: ethers.providers.Log): string => {
   for (const abi of abis) {
-    const iface = new ethers.utils.Interface(abi)
     try {
+      const iface = new ethers.utils.Interface(abi)
       const parsedLog = iface.parseLog(log)
       return `${parsedLog.name}(${parsedLog.args.join(',')})`
     } catch (e) {

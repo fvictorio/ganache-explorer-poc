@@ -27,7 +27,7 @@ export const ConfPage: React.FC = () => {
 
   return (
     <>
-      <form noValidate autoComplete="off">
+      <form noValidate autoComplete="off" onSubmit={() => {}}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={3}>
             <TextField
@@ -48,7 +48,7 @@ export const ConfPage: React.FC = () => {
               onChange={e => setNewAbi(e.currentTarget.value)}
               rowsMin={3}
               rowsMax={10}
-            style={{width: '100%'}}
+              style={{ width: '100%', resize: 'vertical' }}
             />
           </Grid>
           <Grid item xs={2}>

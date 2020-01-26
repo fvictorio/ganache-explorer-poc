@@ -15,7 +15,7 @@ const parseLog = (abis: any[], log: ethers.providers.Log): string => {
     try {
       const iface = new ethers.utils.Interface(abi)
       const parsedLog = iface.parseLog(log)
-      return `${parsedLog.name}(${parsedLog.args.join(',')})`
+      return `${parsedLog.name}(${parsedLog.args.join(', ')})`
     } catch (e) {
       continue
     }
@@ -38,7 +38,7 @@ export const Transaction: React.FC<Props> = ({ transaction, receipt }) => {
       <p>
         Data:{' '}
         <span title={transaction.data}>
-          {transaction.data.length > 8 ? `${transaction.data.slice(0, 8)}...` : transaction.data}
+          {transaction.data.length > 10 ? `${transaction.data.slice(0, 10)}...` : transaction.data}
         </span>
       </p>
       {receipt && (

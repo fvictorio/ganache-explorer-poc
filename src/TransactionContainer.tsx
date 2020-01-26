@@ -1,29 +1,26 @@
 import React from 'react'
-import { ethers } from 'ethers'
 import { CircularProgress } from '@material-ui/core'
 
 import { Transaction } from './Transaction'
-import { useConf } from './ConfProvider'
+import { useWrappedWeb3 } from './WrappedWeb3Provider'
 
 type Props = {
   hash: string
 }
 
 export const TransactionContainer: React.FC<Props> = props => {
-  const { conf } = useConf()
   const [transaction, setTransaction] = React.useState<Maybe<TransactionResponse>>(null)
   const [receipt, setReceipt] = React.useState<Maybe<TransactionReceipt>>(null)
+  const { library } = useWrappedWeb3()
 
   React.useEffect(() => {
     const run = async () => {
-      const provider = new ethers.providers.JsonRpcProvider(conf.rpcUrl)
-
-      provider.getTransaction(props.hash).then(setTransaction)
-      provider.getTransactionReceipt(props.hash).then(setReceipt)
+      library.getTransaction(props.hash).then(setTransaction)
+      library.getTransactionReceipt(props.hash).then(setReceipt)
     }
 
     run()
-  }, [props.hash, conf.rpcUrl])
+  }, [props.hash, library])
 
   return transaction ? <Transaction transaction={transaction} receipt={receipt} /> : <CircularProgress />
 }

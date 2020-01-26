@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { ethers } from 'ethers'
+import { Box, Button } from '@material-ui/core'
 
 import { Block } from './Block'
 import { useConf } from './ConfProvider'
@@ -32,12 +33,12 @@ export const BlockExplorer: React.FC<Props> = ({ blocks }) => {
 
   return (
     <div className="BlockExplorer">
-      <button onClick={mine}>Mine new block</button>
-      <ul>
-        {blocks.map(block => (
-          <Block key={block.hash} block={block} />
-        ))}
-      </ul>
+      <Box marginY={2}>
+      <Button onClick={mine} variant="contained" size="small">Mine new block</Button>
+    </Box>
+    {blocks.length ? blocks.map(block => (
+      <Block key={block.hash} block={block} />
+      )) : <p>No blocks</p>}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { ethers } from 'ethers'
+import { CircularProgress } from '@material-ui/core'
 
 import { Transaction } from './Transaction'
 import { useConf } from './ConfProvider'
@@ -24,5 +25,5 @@ export const TransactionContainer: React.FC<Props> = props => {
     run()
   }, [props.hash, conf.rpcUrl])
 
-  return transaction ? <Transaction transaction={transaction} receipt={receipt} /> : <span>'Loading...'</span>
+  return transaction ? <Transaction transaction={transaction} receipt={receipt} /> : <CircularProgress />
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { ethers } from 'ethers'
 import useInterval from '@use-it/interval'
+import { CircularProgress } from '@material-ui/core'
 
 import { BlockExplorer, Block } from './BlockExplorer'
 import { useConf } from './ConfProvider'
@@ -46,5 +47,6 @@ export const BlockExplorerContainer: React.FC = () => {
     run()
   }, [blockNumber, lastBlockNumber, conf.rpcUrl])
 
-  return blocks ? <BlockExplorer blocks={blocks} /> : <span>Loading...</span>
+  return blocks ? <BlockExplorer blocks={blocks} /> : <CircularProgress />
+
 }

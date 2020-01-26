@@ -1,8 +1,10 @@
 import React from 'react'
-import { Link, HashRouter as Router, Switch, Route } from 'react-router-dom'
+import { HashRouter as Router, Switch, Route } from 'react-router-dom'
+import { Container } from '@material-ui/core'
 
 import { ConfPage, HomePage, TransactionPage } from './pages'
 import { ConfProvider } from './ConfProvider'
+import { Header } from './Header'
 import './App.css'
 
 const App: React.FC = () => {
@@ -10,16 +12,14 @@ const App: React.FC = () => {
     <div className="App">
       <ConfProvider>
         <Router>
-          <nav>
-            <Link to="/">Home</Link>
-            {' '}
-            <Link to="/conf">Conf</Link>
-          </nav>
+          <Header />
+          <Container>
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route exact path="/conf" component={ConfPage} />
             <Route path="/tx/:tx" component={TransactionPage} />
           </Switch>
+    </Container>
         </Router>
       </ConfProvider>
     </div>

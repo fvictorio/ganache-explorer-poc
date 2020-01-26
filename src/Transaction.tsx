@@ -1,6 +1,8 @@
 import React from 'react'
 import ethers from 'ethers'
+import { Card, CardContent, Typography, makeStyles } from '@material-ui/core'
 
+import { useCardStyles } from './styles'
 import { useConf } from './ConfProvider'
 
 type Props = {
@@ -22,11 +24,15 @@ const parseLog = (abis: any[], log: ethers.providers.Log): string => {
 }
 
 export const Transaction: React.FC<Props> = ({ transaction, receipt }) => {
+  const classes = useCardStyles()
   const { conf } = useConf()
 
   return (
-    <>
-      <h1>{transaction.hash}</h1>
+    <Card variant="outlined" className={classes.card}>
+      <CardContent>
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
+      {transaction.hash}
+      </Typography>
       <p>From: {transaction.from}</p>
       <p>To: {transaction.to}</p>
       <p>
@@ -49,6 +55,7 @@ export const Transaction: React.FC<Props> = ({ transaction, receipt }) => {
           )}
         </>
       )}
-    </>
+    </CardContent>
+    </Card>
   )
 }

@@ -7,12 +7,16 @@ type Conf = {
   version: number
   abis: any[]
   rpcUrl: string
+  addressBook: {[address: string]: string}
 }
 
 const defaultConf: Conf = {
   version: VERSION,
   rpcUrl: 'http://localhost:8545',
   abis: [erc20],
+  addressBook: {
+    '0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1': 'ganache1'
+  }
 }
 
 const ConfContext = React.createContext<{ conf: Conf; updateConf: any } | null>(null)

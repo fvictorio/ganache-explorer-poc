@@ -7,6 +7,18 @@ export const ConfPage: React.FC = () => {
   const { conf, updateConf } = useConf()
   const [newAbi, setNewAbi] = React.useState('')
   const [newRpcUrl, setNewRpcUrl] = React.useState(conf.rpcUrl)
+  const [addressBookEntry, setAddressBookEntry] = React.useState({ address: '', name: '' })
+
+  const setAddressBookEntryAddress = (address: string) =>
+    setAddressBookEntry(entry => ({
+      ...entry,
+      address,
+    }))
+  const setAddressBookEntryName = (name: string) =>
+    setAddressBookEntry(entry => ({
+      ...entry,
+      name,
+    }))
 
   const addNewAbi = () => {
     try {
@@ -20,6 +32,16 @@ export const ConfPage: React.FC = () => {
 
   const changeRpcUrl = () => {
     updateConf({ rpcUrl: newRpcUrl })
+  }
+
+  const addAddressBookEntry = () => {
+    updateConf({
+      addressBook: {
+        ...conf.addressBook,
+        [addressBookEntry.address.toLowerCase()]: addressBookEntry.name,
+      },
+    })
+    setAddressBookEntry({ address: '', name: '' })
   }
 
   const validAbi = newAbi.length > 0
@@ -56,6 +78,34 @@ export const ConfPage: React.FC = () => {
               Add ABI
             </Button>
           </Grid>
+          <Grid item xs={7} />
+          <Grid item xs={3}>
+            <TextField
+              value={addressBookEntry.address}
+              onChange={e => setAddressBookEntryAddress(e.currentTarget.value)}
+              error={!addressBookEntry.address}
+              placeholder="Address"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              value={addressBookEntry.name}
+              onChange={e => setAddressBookEntryName(e.currentTarget.value)}
+              error={!addressBookEntry.name}
+              placeholder="Name"
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              onClick={addAddressBookEntry}
+              disabled={!addressBookEntry.address || !addressBookEntry.name}
+              variant="contained"
+              size="small"
+            >
+              Add to address book
+            </Button>
+          </Grid>
+          <Grid item xs={4} />
         </Grid>
       </form>
     </>

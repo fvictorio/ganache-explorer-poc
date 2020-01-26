@@ -27,14 +27,20 @@ export const Transaction: React.FC<Props> = ({ transaction, receipt }) => {
   const classes = useCardStyles()
   const { conf } = useConf()
 
+  const showAddress = (address?: string) => {
+    if (!address) return address
+    const addressName = conf.addressBook[address.toLowerCase()]
+    return addressName || address
+  }
+
   return (
     <Card variant="outlined" className={classes.card}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
       {transaction.hash}
       </Typography>
-      <p>From: {transaction.from}</p>
-      <p>To: {transaction.to}</p>
+      <p>From: {showAddress(transaction.from)}</p>
+      <p>To: {showAddress(transaction.to)}</p>
       <p>
         Data:{' '}
         <span title={transaction.data}>

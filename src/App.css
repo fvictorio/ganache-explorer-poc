@@ -1,2 +1,10 @@
 .App {
 }
+
+.BlockExplorer .block-enter {
+  opacity: 0;
+}
+.BlockExplorer .block-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}

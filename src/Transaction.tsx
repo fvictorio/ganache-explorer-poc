@@ -1,6 +1,6 @@
 import React from 'react'
 import ethers from 'ethers'
-import { Card, CardContent, Typography, makeStyles } from '@material-ui/core'
+import { Card, CardContent, Typography } from '@material-ui/core'
 
 import { useCardStyles } from './styles'
 import { useConf } from './ConfProvider'

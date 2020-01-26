@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Grid, Button, TextareaAutosize, TextField } from '@material-ui/core'
+import { Grid, Button, TextareaAutosize, TextField } from '@material-ui/core'
 
 import { useConf } from '../ConfProvider'
 

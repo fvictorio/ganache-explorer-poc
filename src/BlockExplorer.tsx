@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { ethers } from 'ethers'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { Box, Button } from '@material-ui/core'
 
 import { Block } from './Block'
@@ -30,15 +31,24 @@ export const BlockExplorer: React.FC<Props> = ({ blocks }) => {
     }
   }
 
-
   return (
     <div className="BlockExplorer">
       <Box marginY={2}>
-      <Button onClick={mine} variant="contained" size="small">Mine new block</Button>
-    </Box>
-    {blocks.length ? blocks.map(block => (
-      <Block key={block.hash} block={block} />
-      )) : <p>No blocks</p>}
+        <Button onClick={mine} variant="contained" size="small">
+          Mine new block
+        </Button>
+      </Box>
+      {blocks.length ? (
+        <TransitionGroup>
+          {blocks.map(block => (
+            <CSSTransition key={block.hash} timeout={500} classNames="block">
+              <Block block={block} />
+            </CSSTransition>
+          ))}
+        </TransitionGroup>
+      ) : (
+        <p>No blocks</p>
+      )}
     </div>
   )
 }

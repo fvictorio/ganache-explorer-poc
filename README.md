@@ -6,7 +6,7 @@ See live demo at https://ganache-explorer-poc.fvictorio.now.sh/
 
 ## Usage
 
-Go to the configuration tab and set the RPC URL of your local instance (`http://localhost:8545`) by default.
+Go to the configuration tab and set the RPC URL of your local instance (`http://localhost:8545` is used by default).
 
 ### Known ABIs
 
